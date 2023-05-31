@@ -3,7 +3,7 @@
 #include <SD.h>
 // Traffic Lights - LED Outputs
 #define ledRed A2
-#define ledYellow A1 
+#define ledYellow A1
 #define ledGreen A0
 // Servo
 #include <Servo.h>
@@ -40,44 +40,47 @@ void setup() {
   Serial.print("Initializing SD card...");
   if (!SD.begin(SDpin)) {
     Serial.println("initialization failed!");
-    while (1)
-      ;
+    //while (1)
+      //;
   }
 
-// Real Time Clock (RTC)
-rtc.begin(DateTime(F(__DATE__), F(__TIME__)));
-Serial.println("initialization done.");
-logEvent("System Initialisation...");
-}
+  // Real Time Clock (RTC)
+  rtc.begin(DateTime(F(__DATE__), F(__TIME__)));
+  Serial.println("initialization done.");
+  //logEvent("System Initialisation...");
 
-// Traffic Lights - LED Outputs
-pinMode(ledRed, OUTPUT);
-pinMode(ledYellow, OUTPUT);
-pinMode(ledGreen, OUTPUT);
 
-// Servo
+  // Traffic Lights - LED Outputs
+  pinMode(ledRed, OUTPUT);
+  pinMode(ledYellow, OUTPUT);
+  pinMode(ledGreen, OUTPUT);
+
+  // Servo
 #include <Servo.h>
-Servo myservo;
+  Servo myservo;
 
-//Potentiometer
-pinMode(pot, INPUT);
+  //Potentiometer
+  pinMode(pot, INPUT);
 
-// Piezo Buzzer
-pinMode(piezoPin,OUTPUT);
 
-// Sonar - HC-SR04
-pinMode(trigPin, OUTPUT); // Sets the trigPin as an OUTPUT
-pinMode(echoPin, INPUT); // Sets the echoPin as an INPUT
+  // Piezo Buzzer
+  pinMode(piezoPin, OUTPUT);
 
-// Line Sensor
-pinMode(lineSensorPin, OUTPUT);
+  // Sonar - HC-SR04
+  pinMode(trigPin, OUTPUT); // Sets the trigPin as an OUTPUT
+  pinMode(echoPin, INPUT); // Sets the echoPin as an INPUT
 
-// Crash Sensor / Button
-pinMode(crashSensor, INPUT);
+  // Line Sensor
+  pinMode(lineSensorPin, OUTPUT);
+
+  // Crash Sensor / Button
+  pinMode(crashSensor, INPUT);
+}
 
 void loop() {
   // put your main code here, to run repeatedly:
-
+  goodBye();
+  wakeUpDevice ();
 
 
 
@@ -85,60 +88,21 @@ void loop() {
 
 }
 
-void logEvent(String dataToLog) {
-  /*
-     Log entries to a file on an SD card.
-  */
-  // Get the updated/current time
-  DateTime rightNow = rtc.now();
-
-  // Open the log file
-  File logFile = SD.open("events.csv", FILE_WRITE);
-  if (!logFile) {
-    Serial.print("Couldn't create log file");
-    abort();
-  }
-
-  // Log the event with the date, time and data
-  logFile.print(rightNow.year(), DEC);
-  logFile.print(",");
-  logFile.print(rightNow.month(), DEC);
-  logFile.print(",");
-  logFile.print(rightNow.day(), DEC);
-  logFile.print(",");
-  logFile.print(rightNow.hour(), DEC);
-  logFile.print(",");
-  logFile.print(rightNow.minute(), DEC);
-  logFile.print(",");
-  logFile.print(rightNow.second(), DEC);
-  logFile.print(",");
-  logFile.print(dataToLog);
-
-  // End the line with a return character.
-  logFile.println();
-  logFile.close();
-  Serial.print("Event Logged: ");
-  Serial.print(rightNow.year(), DEC);
-  Serial.print(",");
-  Serial.print(rightNow.month(), DEC);
-  Serial.print(",");
-  Serial.print(rightNow.day(), DEC);
-  Serial.print(",");
-  Serial.print(rightNow.hour(), DEC);
-  Serial.print(",");
-  Serial.print(rightNow.minute(), DEC);
-  Serial.print(",");
-  Serial.print(rightNow.second(), DEC);
-  Serial.print(",");
-  Serial.println(dataToLog);
-}
 /*
   when movement sensor detects movement,turns on green light and spins the fan otherwise turns on red light
   @params none
   @return none
 */
 void wakeUpDevice () {
-
+int lineSensorValue = digitalRead(lineSensorPin);
+  if (lineSensorValue == 0) {
+    Serial.println("high");
+    digitalWrite(ledGreen, HIGH);
+    delay(2000);
+    digitalWrite(ledGreen , LOW);
+  } else {
+    digitalWrite(ledGreen , LOW);
+  }
 }
 
 /*
@@ -156,9 +120,12 @@ void weatherCheck() {
   @return none
 */
 void goodBye () {
-
-}
-}
-
+  int crashSensorValue = digitalRead(crashSensor);
+  if (crashSensorValue == 0) {
+    Serial.println("high");
+    digitalWrite(ledRed, HIGH);
+  } else {
+    digitalWrite(ledRed, LOW);
+  }
 
 }
