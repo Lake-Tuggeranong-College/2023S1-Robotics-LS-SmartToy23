@@ -19,6 +19,17 @@ Servo myservo;
 #define lineSensorPin 3
 // Crash Sensor / Button
 #define crashSensor 7
+// DC Motor & Motor Module - L298N
+#include <L298N.h>
+
+
+// Pin definition
+const unsigned int IN1 = 5;
+const unsigned int IN2 = 6;
+const unsigned int EN = 9;
+
+// Create one motor instance
+L298N motor(EN, IN1, IN2);
 
 
 // Real Time Clock (RTC)
@@ -41,7 +52,7 @@ void setup() {
   if (!SD.begin(SDpin)) {
     Serial.println("initialization failed!");
     //while (1)
-      //;
+    //;
   }
 
   // Real Time Clock (RTC)
@@ -71,16 +82,20 @@ void setup() {
   pinMode(echoPin, INPUT); // Sets the echoPin as an INPUT
 
   // Line Sensor
-  pinMode(lineSensorPin, OUTPUT);
+  pinMode(lineSensorPin, INPUT);
 
   // Crash Sensor / Button
   pinMode(crashSensor, INPUT);
+
+  // DC Motor & Motor Module - L298N
+  motor.setSpeed(255);
 }
 
 void loop() {
   // put your main code here, to run repeatedly:
   goodBye();
   wakeUpDevice ();
+  weatherCheck();
 
 
 
@@ -94,12 +109,25 @@ void loop() {
   @return none
 */
 void wakeUpDevice () {
-int lineSensorValue = digitalRead(lineSensorPin);
+  int lineSensorValue = digitalRead(lineSensorPin);
   if (lineSensorValue == 0) {
     Serial.println("high");
     digitalWrite(ledGreen, HIGH);
-    delay(2000);
+    delay(1000);
     digitalWrite(ledGreen , LOW);
+    Serial.println("Motor forward");
+    motor.forward();
+    delay(1000);
+    Serial.println("Motor stop");
+
+    motor.stop();
+    delay(1000);
+    Serial.println("Motor backward");
+
+    motor.backward();
+    delay(1000);
+    motor.stop();
+    Serial.println("Motor stop2");
   } else {
     digitalWrite(ledGreen , LOW);
   }
@@ -111,7 +139,27 @@ int lineSensorValue = digitalRead(lineSensorPin);
   @return none
 */
 void weatherCheck() {
-
+  digitalWrite(trigPin, LOW);
+  delayMicroseconds(2);
+  // Sets the trigPin HIGH (ACTIVE) for 10 microseconds
+  digitalWrite(trigPin, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(trigPin, LOW);
+  // Reads the echoPin, returns the sound wave travel time in microseconds
+  long duration = pulseIn(echoPin, HIGH);
+  // Calculating the distance
+  int distance = duration * 0.034 / 2; // Speed of sound wave divided by 2 (go and back)
+  Serial.println("Eyes: ");
+  Serial.println(distance);
+  if (distance < 50) {
+    Serial.println("high");
+    digitalWrite(ledYellow, HIGH);
+    tone(piezoPin, distance); // Send 1KHz sound signal...
+    delay(100);
+    noTone(piezoPin);
+  } else {
+    digitalWrite(ledYellow, LOW);
+  }
 
 }
 /*
