@@ -5,15 +5,9 @@
 Smart toy
 
 ## Behaviours
-wave to wake the toy up. when there is no movement the light will be red. When you wave, the light will turn green. the button will then wave back.
+It has a wake up function. If the line sensor detects movement, it will turn on the green light and the dc motor to symbolise it waving at you.
 
-button can say hi and be paired with wave back if it sees movement
+It has a good bye function. If the crash sensor button is pressed, it will turn on the red light.
 
-if you move far away from the toy it will say bye bye (buzzer beeps twice) and wave for 5 seconds then go to sleep.
+It has a music play function. If you put your hand to the sonar sensor, it will detect the movement and turn on the yellow light. It will also sound the piezo buzzer which changes based on how close the hand is to the sensor.
 
-log everything
-
-If the toy reaches the edge of a surface, it will stop itself using a line sensor.
-
-
-1. Behaviour 1
