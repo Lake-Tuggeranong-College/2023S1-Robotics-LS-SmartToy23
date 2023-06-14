@@ -95,7 +95,7 @@ void loop() {
   // put your main code here, to run repeatedly:
   goodBye();
   wakeUpDevice ();
-  weatherCheck();
+  musicPlay();
 
 
 
@@ -104,8 +104,7 @@ void loop() {
 }
 
 /*
-  when movement sensor detects movement,turns on green light and spins the fan otherwise turns on red light
-  @params none
+  when line sensor detects movement,turns on green light and spins the fan
   @return none
 */
 void wakeUpDevice () {
@@ -134,11 +133,11 @@ void wakeUpDevice () {
 }
 
 /*
-  checks whether it is above 13 degrees celsius if yes returns it is warm if no returns it is cold
+  checks if movement is detected in sonar sensor. If it detects movement below 50, it will play piezo buzzer noise, changing with distance.
   @params none
   @return none
 */
-void weatherCheck() {
+void musicPlay() {
   digitalWrite(trigPin, LOW);
   delayMicroseconds(2);
   // Sets the trigPin HIGH (ACTIVE) for 10 microseconds
@@ -163,7 +162,7 @@ void weatherCheck() {
 
 }
 /*
-  when movement is not detected for a minute piezo buzzer is sounded to say goodbye
+  if the crash sensor button is pressed, the red light turns on to say goodbye
   @params none
   @return none
 */

@@ -6,32 +6,32 @@
 
 ```mermaid
 flowchart TD
-s(Start) --> check(detect movement?)
-check --> |false| G(Goodbye)
-check --> |true| s
+s(Start) --> check(is crash sensor pressed)
+check --> |false| Off(Red light off)
+check --> |true| Red(Display red light)
 ```
-## Weather Check Function
+## Music Play Function
 
 ```mermaid
 flowchart TD
-    S(Start)-->Speech[/Input - What is weather?/]
-    Speech --> Weather[var temp]
-Weather --> Check{temp < 13}
-Check -->|true| cold[/output - it's cold/]
-Check -->|false| warm[/output - it's warm/]
+    S(Start)-->Sonar[/Input - Distance?/]
+    Sonar --> Distance[var distance]
+Sonar --> Check{distance < 50}
+Check -->|true| play[/output - turn on yellow light and play sound/]
+Check -->|false| noplay(Do nothing)
 E(End)
-cold --> E
-warm --> E
+
    
 ```
 ## Wake Up Function
 
 ```mermaid
 flowchart TD
-S(Start) --> Visual{is movement detected}
-Visual -->|yes| green[Task - Turn green Light On ]
-Visual -->|no| red[Task - Turn red Light On ]
+S(Start) --> Visual{is movement detected line sensor}
+Visual -->|yes| green[Task - Turn green Light On]
 green --> wave[Task - Turn On fan]
+Visual -->|no| red[Task - Turn green light off]
+
 
 
 ```
